@@ -1,23 +1,42 @@
 import logo from './logo.svg';
 import './App.css';
+import React , { useState, useEffect } from 'react';
+
+
+import ArticleList from './components/articleslist';
 
 function App() {
+
+    const [articles, setArticles] = useState([]);
+    const [loaded, setLoaded] = useState(false);
+
+
+    useEffect(() => {
+
+        const axios = require('axios');
+        axios.get('https://jsonplaceholder.typicode.com/posts')
+        .then((data)=>{
+            setArticles(data.data);
+            setLoaded(true);
+        })
+        .catch((error)=>{
+            console.log(error);
+        })
+    }, []);
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      {
+        loaded ?
+            <div>
+                <ArticleList articles={articles} />
+            </div>
+        :
+        <div>
+            Loading
+        </div>
+      }
+      
+
     </div>
   );
 }
